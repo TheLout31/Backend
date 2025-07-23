@@ -1,3 +1,5 @@
+const p = require("is-even")
+
 function isPrime(n) {
   if (n <= 1) {
     return "is not a prime Number";
