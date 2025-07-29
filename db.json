@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Intro to reactJs",
+    "instructor": "raju",
+    "desc": "learning about forntend",
+    "duration": "10 days"
+  },
+  {
+    "id": 2,
+    "name": "Intro to backend",
+    "instructor": "bheem",
+    "desc": "learning about db, server etc.",
+    "duration": "0 days"
+  },
+  {
+    "id": 3,
+    "name": "Intro to TypeScript",
+    "instructor": "chutki",
+    "desc": "learning about Ts language",
+    "duration": "5 days"
+  },
+  {
+    "id": 4,
+    "name": "Intro to JS",
+    "instructor": "kaalia",
+    "desc": "learning about JS language",
+    "duration": "15 days"
+  }
+]
