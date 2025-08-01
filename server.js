@@ -4,6 +4,8 @@ const PORT = 3000;
 const CourseRouter = require("./routes/course.routes");
 const rateLimit = require("express-rate-limit");
 const connectTODB = require("./config/mongodb.config");
+const StudentsRouter = require("./routes/students.routes");
+
 
 // const limiter = rateLimit({
 //   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -26,6 +28,7 @@ app.use(express.json());
 
 //Course Routes
 app.use("/courses", CourseRouter);
+app.use("/students", StudentsRouter);
 
 // Start server
 app.listen(PORT, () => {

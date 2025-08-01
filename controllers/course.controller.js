@@ -1,10 +1,9 @@
-const fs = require("fs");
 const courseModel = require("../models/course.model");
 
 const getCourses = async (req, res) => {
   try {
-    const documents = await courseModel.find({});
-    res.status(200).json({ msg: "List of courses", documents });
+    const courses = await courseModel.find({});
+    res.status(200).json({ msg: "List of courses", courses });
   } catch (error) {
     console.error("Error finding documents:", error);
     res.json({ msg: error });
@@ -14,7 +13,7 @@ const getCourses = async (req, res) => {
 const postCourse = async (req, res) => {
   try {
     let course = await courseModel.create(req.body);
-    res.status(200).json({ msg: "New Course Added!!", course });
+    res.status(201).json({ msg: "New Course Added!!", course });
   } catch (error) {
     console.log(error);
     res.json({ msg: error });

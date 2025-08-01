@@ -12,7 +12,7 @@ const dataCheck = require("../models/course.data.check");
 CourseRouter.get("/all-courses", getCourses);
 
 // ✅ Apply dataCheck only to POST route
-CourseRouter.post("/add-courses", dataCheck, postCourse);
+CourseRouter.post("/add-courses", postCourse);
 
 CourseRouter.put("/update-courses/:id", updateCourse);
 
