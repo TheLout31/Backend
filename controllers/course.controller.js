@@ -1,63 +1,66 @@
 const fs = require("fs");
+const courseModel = require("../models/course.model");
 
-const getCourses = (req, res) => {
+const getCourses = async (req, res) => {
   try {
-    let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"));
-    let course = data.courses || [];
-    console.log("getting all courses data ", course);
-    res.json({ msg: "Successfully fetched all courses", course });
+    const documents = await courseModel.find({});
+    res.status(200).json({ msg: "List of courses", documents });
   } catch (error) {
-    res.json({ msg: "Failed to load all courses", error });
+    console.error("Error finding documents:", error);
+    res.json({ msg: error });
   }
 };
 
-const postCourse = (req, res) => {
+const postCourse = async (req, res) => {
   try {
-    let newCourse = req.body;
-    let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"));
-    let course = data.courses || [];
-    let id = course.length > 0 ? course[course.length - 1].id + 1 : 1;
-    let newData = { id, ...newCourse };
-    course.push(newData);
-    data.courses = course;
-    fs.writeFileSync("./db.json", JSON.stringify(data, null, 2));
-    res.json({ msg: "New course added successfully", course: newData });
+    let course = await courseModel.create(req.body);
+    res.status(200).json({ msg: "New Course Added!!", course });
   } catch (error) {
-    res.status(500).json({ msg: "Error adding course", error });
+    console.log(error);
+    res.json({ msg: error });
   }
 };
 
-const updateCourse = (req, res) => {
-  let id = Number(req.params.id);
-  let newCourse = req.body;
-  let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"));
-  let course = data.courses || [];
-  let idx = course.findIndex((course) => course.id === id);
-  if (idx === -1) {
-    res.json({ msg: "Course not found" });
-  } else {
-    let updatedCourse = course.map((el) =>
-      el.id === id ? { ...el, ...newCourse } : el
+const updateCourse = async (req, res) => {
+  try {
+    const id = req.params.id; // Leave as string for ObjectId
+    const updatedCourse = await courseModel.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true } // Return the updated document
     );
-    data.courses = updatedCourse;
-    fs.writeFileSync("./db.json", JSON.stringify(data, null, 2));
-    res.json({ msg: "Course updated successfully", course: updatedCourse });
+
+    if (updatedCourse) {
+      console.log("Course updated successfully:", updatedCourse);
+      res
+        .status(200)
+        .json({ msg: "Course updated successfully", updatedCourse });
+    } else {
+      console.log("Course not found.");
+      res.status(404).json({ msg: "Course not found" });
+    }
+  } catch (error) {
+    console.error("Error updating Course:", error);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
-const deleteCourse = (req, res) => {
-  let id = Number(req.params.id);
-  let data = JSON.parse(fs.readFileSync("./db.json", "utf-8"));
-  let course = data.courses || [];
-  let idx = course.findIndex((course) => course.id === id);
-  if (idx === -1) {
-    res.json({ msg: "Course not found" });
-  } else {
-    let updatedCourse = course.filter((el) => el.id !== id);
-    data.courses = updatedCourse;
-    fs.writeFileSync("./db.json", JSON.stringify(data, null, 2));
-    res.json({ msg: "Course deleted successfully", course: updatedCourse });
+const deleteCourse = async (req, res) => {
+  try {
+    const id = req.params.id; // Leave as string for ObjectId
+    const deletedUser = await courseModel.findByIdAndDelete(id);
+
+    if (deletedUser) {
+      console.log("Course updated successfully:", deletedUser);
+      res.status(200).json({ msg: "Course deleted successfully", deletedUser });
+    } else {
+      console.log("Course not found.");
+      res.status(404).json({ msg: "Course not found" });
+    }
+  } catch (error) {
+    console.error("Error deleted Course:", error);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 };
 
-module.exports = { getCourses, postCourse, updateCourse,deleteCourse };
+module.exports = { getCourses, postCourse, updateCourse, deleteCourse };
