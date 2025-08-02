@@ -1,8 +1,16 @@
 const studentModel = require("../models/student.model");
 
 const getStudents = async (req, res) => {
+  const { age, courses } = req.query;
   try {
-    const student = await studentModel.find({});
+    let filter = {};
+    if (age) {
+      filter.age = { $gte: parseInt(age) };
+    }
+    if (courses) {
+      filter.enrolledCourses = { $exists: courses, $ne: [] };
+    }
+    const student = await studentModel.find(filter);
     res.status(200).json({ msg: "List of students", student });
   } catch (error) {
     console.error("Error finding students:", error);

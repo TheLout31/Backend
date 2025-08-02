@@ -1,8 +1,15 @@
 const courseModel = require("../models/course.model");
 
 const getCourses = async (req, res) => {
+  const { level } = req.query;
   try {
-    const courses = await courseModel.find({});
+    let filter = {};
+
+    if (level) {
+      const levels = level.split(","); // Split string into array
+      filter.level = { $in: levels };
+    }
+    const courses = await courseModel.find(filter);
     res.status(200).json({ msg: "List of courses", courses });
   } catch (error) {
     console.error("Error finding documents:", error);
